@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.cluster.name }}-config
+  namespace: {{ .Values.cluster.namespace }}
+data:
+  postgresql.conf: |
+    max_connections = {{ .Values.postgresConfig.maxConnections }}
+    shared_buffers = {{ .Values.postgresConfig.sharedBuffers }}
+    effective_cache_size = {{ .Values.postgresConfig.effectiveCacheSize }}
+    maintenance_work_mem = {{ .Values.postgresConfig.maintenanceWorkMem }}
+    wal_buffers = {{ .Values.postgresConfig.walBuffers }}
+    work_mem = {{ .Values.postgresConfig.workMem }}
+    
+    # Logging
+    log_destination = 'stderr'
+    logging_collector = on
+    log_directory = 'log'
+    log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+    log_statement = 'all'
+    log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '

@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Values.cluster.namespace }}
+  labels:
+    app: {{ .Values.cluster.name }}
+spec:
+  serviceName: {{ .Values.cluster.name }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.cluster.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.cluster.name }}
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .Values.postgres.image }}
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgres.database }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgres.username }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.cluster.name }}-credentials
+              key: password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        - name: postgres-config
+          mountPath: /etc/postgresql/postgresql.conf
+          subPath: postgresql.conf
+        args:
+          - "-c"
+          - "config_file=/etc/postgresql/postgresql.conf"
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U {{ .Values.postgres.username }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pg_isready -U {{ .Values.postgres.username }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+      volumes:
+      - name: postgres-config
+        configMap:
+          name: {{ .Values.cluster.name }}-config
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ {{ .Values.storage.accessMode | quote }} ]
+      {{- if .Values.storage.storageClass }}
+      storageClassName: {{ .Values.storage.storageClass }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.storage.size }}
+  {{- else }}
+      - name: postgres-data
+        emptyDir: {}
+  {{- end }}
