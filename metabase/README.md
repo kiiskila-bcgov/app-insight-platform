@@ -31,7 +31,7 @@ oc wait --for=condition=ready pod -l app=metabase --timeout=300s
 
 ## 3. Setup the APS Gateway
 
-See the [Gateway Documentation](https://github.com/kiiskila-bcgov/app-insight-platform/tree/main/gateway#readme) for more information on setting up an IDIR authenticated route.
+See the [Gateway Documentation](../gateway/README.md) for more information on setting up an IDIR authenticated route.
 
 
 ## Troubleshooting
