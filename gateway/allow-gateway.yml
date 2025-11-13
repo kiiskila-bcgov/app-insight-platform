@@ -1,0 +1,27 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-traffic-from-gateway-to-service
+  namespace: a2edba-dev
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/app: metabase
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: dev
+              name: 264e6f
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: test
+              name: 264e6f
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: prod
+              name: 264e6f
+  policyTypes:
+    - Ingress
