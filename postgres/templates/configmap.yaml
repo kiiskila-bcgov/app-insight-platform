@@ -5,7 +5,14 @@ metadata:
   namespace: {{ .Values.cluster.namespace }}
 data:
   postgresql.conf: |
+    # Network Configuration
+    listen_addresses = '*'
+    port = 5432
+    
+    # Connection and Authentication
     max_connections = {{ .Values.postgresConfig.maxConnections }}
+    
+    # Memory Configuration
     shared_buffers = {{ .Values.postgresConfig.sharedBuffers }}
     effective_cache_size = {{ .Values.postgresConfig.effectiveCacheSize }}
     maintenance_work_mem = {{ .Values.postgresConfig.maintenanceWorkMem }}

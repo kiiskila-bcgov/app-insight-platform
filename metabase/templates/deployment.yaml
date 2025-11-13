@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metabase
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: metabase
+spec:
+  replicas: {{ .Values.metabase.replicas }}
+  selector:
+    matchLabels:
+      app: metabase
+  template:
+    metadata:
+      labels:
+        app: metabase
+    spec:
+      containers:
+      - name: metabase
+        image: {{ .Values.metabase.image }}
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: MB_DB_TYPE
+          value: {{ .Values.metabase.database.type }}
+        - name: MB_DB_DBNAME
+          value: {{ .Values.metabase.database.name }}
+        - name: MB_DB_PORT
+          value: {{ .Values.metabase.database.port | quote }}
+        - name: MB_DB_USER
+          value: {{ .Values.metabase.database.username }}
+        - name: MB_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: password
+        - name: MB_DB_HOST
+          value: {{ .Values.metabase.database.host }}
+        - name: JAVA_OPTS
+          value: "-Xmx512m"
+        resources:
+          requests:
+            cpu: {{ .Values.metabase.resources.requests.cpu }}
+            memory: {{ .Values.metabase.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.metabase.resources.limits.cpu }}
+            memory: {{ .Values.metabase.resources.limits.memory }}
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 300
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5

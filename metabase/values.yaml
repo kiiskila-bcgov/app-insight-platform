@@ -1,0 +1,24 @@
+namespace: a2edba-dev
+
+metabase:
+  image: docker.io/metabase/metabase:v0.50.3
+  replicas: 1
+
+  database:
+    type: postgres
+    host: postgres
+    port: 5432
+    name: metabase
+    username: postgres
+
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+service:
+  type: ClusterIP
+  port: 3000
