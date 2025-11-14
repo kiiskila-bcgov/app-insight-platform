@@ -30,8 +30,8 @@ routes:
           bearer_jwt_auth_signing_algs:
             - RS256
           bearer_only: "no"
-          client_secret: CLIENT_SECET # CSS
           client_id: social-sector-analytics-6161 # CSS
+          client_secret: Trp8rmYWGm3JMJhZo0d5umByT1yqwX8E # CSS
           disable_access_token_header: "yes"
           disable_id_token_header: "yes"
           disable_userinfo_header: "yes"

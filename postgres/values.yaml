@@ -1,6 +1,5 @@
 cluster:
   name: postgres
-  namespace: a2edba-dev
 
 postgres:
   version: "17"
@@ -11,14 +10,14 @@ postgres:
 
 resources:
   requests:
+    cpu: "125m"
+    memory: "256Mi"
+  limits:
     cpu: "250m"
     memory: "512Mi"
-  limits:
-    cpu: "500m"
-    memory: "1Gi"
 
 storage:
-  size: 1Gi
+  size: "256Mi"
   storageClass: ""
   accessMode: ReadWriteOnce
 

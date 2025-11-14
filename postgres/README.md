@@ -15,9 +15,7 @@ This is a standard PostgreSQL v17 deployment for managed OpenShift environments.
 
 ```bash
 # Install using the standard templates
-helm install postgres . \
-  -f values-standard.yaml \
-  -n a2edba-dev
+helm install postgres . 
 ```
 
 ### Verify Deployment
