@@ -17,7 +17,19 @@ cd metabase
 helm install metabase .
 ```
 
-### 2. Wait for Deployment
+### 2. Create Metabase Database
+
+Metabase expects a metabase database to exist before it starts up. Create it with:
+
+There are a number of ways to create the initial database, I port-forwarded the postgres service and used psql to create the database.
+
+```bash
+oc port-forward svc/postgres 5432:5432
+psql -h localhost -U postgres -c "CREATE DATABASE metabase;"
+```
+
+
+### 3. Wait for Deployment
 
 Metabase takes about 2-3 minutes to start up:
 
@@ -29,7 +41,7 @@ oc get pods -l app=metabase -w
 oc wait --for=condition=ready pod -l app=metabase --timeout=300s
 ```
 
-## 3. Setup the APS Gateway
+## 4. Setup the APS Gateway
 
 See the [Gateway Documentation](../gateway/README.md) for more information on setting up an IDIR authenticated route.
 
