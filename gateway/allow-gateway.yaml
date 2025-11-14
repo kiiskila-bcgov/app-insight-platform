@@ -6,7 +6,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/app: metabase
+      app: metabase
   ingress:
     - from:
         - namespaceSelector:

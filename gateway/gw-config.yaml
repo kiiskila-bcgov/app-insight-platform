@@ -1,14 +1,14 @@
 kind: GatewayService
-name: metabase-a2edba-dev-apps-silver-devops-gov-bc-ca-dev
-tags: [ns.gw-db50d]
-url: http://metabase.a2edba-dev.svc.cluster.local:3000 # Service
+name: metabase-analytics
+tags: [ns.gw-f4116.dev]
+url: http://metabase.e1fecb-dev.svc.cluster.local:3000 # Service
 port: 3000
 protocol: http
 routes:
-  - name: a2edba-callback
-    tags: [ns.gw-db50d, aps.route.session.cookie.enabled]
+  - name: e1fecb-callback
+    tags: [ns.gw-f4116.dev, aps.route.session.cookie.enabled]
     hosts:
-      - metabase.dev.api.gov.bc.ca # route host
+      - metabase-analytics.dev.api.gov.bc.ca # route host
     paths:
       - /
     methods:
@@ -20,18 +20,18 @@ routes:
     plugins:
       - enabled: true
         name: oidc
-        tags: [ns.gw-db50d]
+        tags: [ns.gw-f4116.dev]
         config:
           access_token_as_bearer: "no"
           access_token_header_name: Authorization
           bearer_jwt_auth_allowed_auds:
-            - app-insight-platform-6157 # CSS
+            - social-sector-analytics-6161 # CSS
           bearer_jwt_auth_enable: "no"
           bearer_jwt_auth_signing_algs:
             - RS256
           bearer_only: "no"
-          client_id: app-insight-platform-6157 # CSS
           client_secret: CLIENT_SECET # CSS
+          client_id: social-sector-analytics-6161 # CSS
           disable_access_token_header: "yes"
           disable_id_token_header: "yes"
           disable_userinfo_header: "yes"
@@ -45,7 +45,7 @@ routes:
             - X-User-Email
           logout_path: /logout
           realm: kong
-          redirect_uri: https://metabase.dev.api.gov.bc.ca/sso # CSS
+          redirect_uri: https://metabase-analytics.dev.api.gov.bc.ca/sso # CSS
           redirect_after_logout_uri: /
           response_type: code
           revoke_tokens_on_logout: "yes"
