@@ -17,17 +17,23 @@ resources:
     memory: "512Mi"
 
 storage:
-  size: "256Mi"
+  size: "512Mi"
   storageClass: ""
   accessMode: ReadWriteOnce
 
 postgresConfig:
-  maxConnections: "50"
-  sharedBuffers: "128MB"
-  effectiveCacheSize: "512MB"
-  maintenanceWorkMem: "32MB"
+  maxConnections: "20"
+  sharedBuffers: "64MB"
+  effectiveCacheSize: "256MB"
+  maintenanceWorkMem: "16MB"
   walBuffers: "4MB"
-  workMem: "1310kB"
+  workMem: "2MB"
+  checkpointTimeout: "30min"
+  maxWalSize: "128MB"
+  minWalSize: "32MB"
+  checkpointCompletionTarget: "0.8"
+  logMinDurationStatement: "10000"
+  logAutovacuumMinDuration: "1000"
 
 service:
   type: ClusterIP

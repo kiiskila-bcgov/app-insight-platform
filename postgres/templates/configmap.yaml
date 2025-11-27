@@ -19,10 +19,27 @@ data:
     wal_buffers = {{ .Values.postgresConfig.walBuffers }}
     work_mem = {{ .Values.postgresConfig.workMem }}
     
-    # Logging
+    # WAL and Checkpoint Configuration
+    max_wal_size = {{ .Values.postgresConfig.maxWalSize }}
+    min_wal_size = {{ .Values.postgresConfig.minWalSize }}
+    checkpoint_timeout = {{ .Values.postgresConfig.checkpointTimeout }}
+    checkpoint_completion_target = {{ .Values.postgresConfig.checkpointCompletionTarget }}
+    
+    # Logging (minimal logging to save space)
     log_destination = 'stderr'
     logging_collector = on
     log_directory = 'log'
     log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
-    log_statement = 'all'
-    log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '
+    log_rotation_size = '10MB'
+    log_rotation_age = '1d'
+    log_truncate_on_rotation = on
+    log_min_duration_statement = {{ .Values.postgresConfig.logMinDurationStatement }}
+    log_autovacuum_min_duration = {{ .Values.postgresConfig.logAutovacuumMinDuration }}
+    log_statement = 'none'
+    
+    # Autovacuum settings for small instances
+    autovacuum = on
+    autovacuum_max_workers = 1
+    autovacuum_naptime = '30s'
+    autovacuum_vacuum_scale_factor = 0.1
+    autovacuum_analyze_scale_factor = 0.05
