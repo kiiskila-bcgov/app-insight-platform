@@ -6,7 +6,6 @@ This is a standard PostgreSQL v17 deployment for managed OpenShift environments.
 
 - OpenShift cluster access with `oc` CLI configured
 - Helm 3.x installed
-- Namespace `a2edba-dev` already created
 - No cluster-admin permissions required
 
 ## Installation
@@ -22,20 +21,20 @@ helm install postgres .
 
 ```bash
 # Check the StatefulSet
-oc get statefulset postgres -n a2edba-dev
+oc get statefulset postgres
 
 # Check the pods
-oc get pods -n a2edba-dev
+oc get pods
 
 # Wait for pod to be ready
-oc wait --for=condition=ready pod/postgres-0 -n a2edba-dev --timeout=300s
+oc wait --for=condition=ready pod/postgres-0 --timeout=300s
 ```
 
 ### Get Database Password
 
 ```bash
 # Retrieve the generated password
-oc get secret postgres-credentials -n a2edba-dev \
+oc get secret postgres-credentials \
   -o jsonpath='{.data.password}' | base64 -d
 echo
 ```
@@ -44,7 +43,7 @@ echo
 
 **From within the cluster:**
 ```
-Host: postgres.a2edba-dev.svc.cluster.local
+Host: postgres.[namespace ex: abcdef-dev].svc.cluster.local
 Port: 5432
 Database: postgres
 Username: postgres
@@ -53,7 +52,7 @@ Password: (from secret above)
 
 **Port-forward for local access:**
 ```bash
-oc port-forward svc/postgres -n a2edba-dev 5432:5432
+oc port-forward svc/postgres 5432:5432
 ```
 
 Then connect:
@@ -63,7 +62,7 @@ psql -h localhost -p 5432 -U postgres
 
 **Execute SQL directly in pod:**
 ```bash
-oc exec -it postgres-0 -n a2edba-dev -- psql -U postgres
+oc exec -it postgres-0 -- psql -U postgres
 ```
 
 ## Configuration
@@ -79,17 +78,16 @@ Edit `values.yaml` to customize:
 
 ```bash
 helm upgrade postgres . \
-  -f values-standard.yaml \
-  -n a2edba-dev
+  -f values.yaml
 ```
 
 ## Uninstall
 
 ```bash
-helm uninstall postgres -n a2edba-dev
+helm uninstall postgres
 
 # Optionally delete the PVC
-oc delete pvc postgres-data-postgres-0 -n a2edba-dev
+oc delete pvc postgres-data-postgres-0
 ```
 
 ## Backup & Restore
@@ -98,11 +96,11 @@ oc delete pvc postgres-data-postgres-0 -n a2edba-dev
 
 ```bash
 # Create a backup
-oc exec postgres-0 -n a2edba-dev -- \
+oc exec postgres-0 -- \
   pg_dump -U postgres postgres > backup.sql
 
 # Or backup all databases
-oc exec postgres-0 -n a2edba-dev -- \
+oc exec postgres-0 -- \
   pg_dumpall -U postgres > backup-all.sql
 ```
 
@@ -110,7 +108,7 @@ oc exec postgres-0 -n a2edba-dev -- \
 
 ```bash
 # Restore from backup
-cat backup.sql | oc exec -i postgres-0 -n a2edba-dev -- \
+cat backup.sql | oc exec -i postgres-0 -- \
   psql -U postgres postgres
 ```
 
@@ -118,19 +116,19 @@ cat backup.sql | oc exec -i postgres-0 -n a2edba-dev -- \
 
 ```bash
 # View logs
-oc logs postgres-0 -n a2edba-dev
+oc logs postgres-0
 
 # Follow logs
-oc logs -f postgres-0 -n a2edba-dev
+oc logs -f postgres-0
 
 # Get pod details
-oc describe pod postgres-0 -n a2edba-dev
+oc describe pod postgres-0
 
 # Check service
-oc get svc postgres -n a2edba-dev
+oc get svc postgres
 
 # Check storage
-oc get pvc -n a2edba-dev
+oc get pvc
 ```
 
 ## Notes
