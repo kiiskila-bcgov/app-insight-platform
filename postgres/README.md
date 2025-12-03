@@ -1,4 +1,4 @@
-# PostgreSQL v16 - Standard Deployment
+# PostgreSQL v17
 
 This is a standard PostgreSQL v17 deployment for managed OpenShift environments.
 
