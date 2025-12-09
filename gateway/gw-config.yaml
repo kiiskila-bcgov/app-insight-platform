@@ -1,14 +1,14 @@
 kind: GatewayService
-name: metabase-analytics
-tags: [ns.gw-f4116.dev]
+name: metabase-dev
+tags: [ns.gw-dd440.dev]
 url: http://metabase.e1fecb-dev.svc.cluster.local:3000 # Service
 port: 3000
 protocol: http
 routes:
-  - name: e1fecb-callback
-    tags: [ns.gw-f4116.dev, aps.route.session.cookie.enabled]
+  - name: e1fecb-dev-callback
+    tags: [ns.gw-dd440.dev, aps.route.session.cookie.enabled]
     hosts:
-      - metabase-analytics.dev.api.gov.bc.ca # route host
+      - metabase.dev.api.gov.bc.ca # route host
     paths:
       - /
     methods:
@@ -20,7 +20,7 @@ routes:
     plugins:
       - enabled: true
         name: oidc
-        tags: [ns.gw-f4116.dev]
+        tags: [ns.gw-dd440.dev]
         config:
           access_token_as_bearer: "no"
           access_token_header_name: Authorization
@@ -45,7 +45,7 @@ routes:
             - X-User-Email
           logout_path: /logout
           realm: kong
-          redirect_uri: https://metabase-analytics.dev.api.gov.bc.ca/sso # CSS
+          redirect_uri: https://metabase.dev.api.gov.bc.ca/sso # CSS
           redirect_after_logout_uri: /
           response_type: code
           revoke_tokens_on_logout: "yes"
