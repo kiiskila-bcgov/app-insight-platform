@@ -1,14 +1,14 @@
 kind: GatewayService
-name: metabase-dev
-tags: [ns.gw-dd440.dev]
-url: http://metabase.e1fecb-dev.svc.cluster.local:3000 # Service
+name: metabase-prod
+tags: [ns.gw-2401a]
+url: http://metabase.e1fecb-prod.svc.cluster.local:3000 # Service
 port: 3000
 protocol: http
 routes:
-  - name: e1fecb-dev-callback
-    tags: [ns.gw-dd440.dev, aps.route.session.cookie.enabled]
+  - name: e1fecb-prod-callback
+    tags: [ns.gw-2401a, aps.route.session.cookie.enabled]
     hosts:
-      - metabase.dev.api.gov.bc.ca # route host
+      - metabase.api.gov.bc.ca # route host
     paths:
       - /
     methods:
@@ -20,7 +20,7 @@ routes:
     plugins:
       - enabled: true
         name: oidc
-        tags: [ns.gw-dd440.dev]
+        tags: [ns.gw-2401a]
         config:
           access_token_as_bearer: "no"
           access_token_header_name: Authorization
@@ -31,11 +31,11 @@ routes:
             - RS256
           bearer_only: "no"
           client_id: social-sector-analytics-6161 # CSS
-          client_secret: Trp8rmYWGm3JMJhZo0d5umByT1yqwX8E # CSS
+          client_secret: YOUR_SSO_CLIENT_SECRET # CSS
           disable_access_token_header: "yes"
           disable_id_token_header: "yes"
           disable_userinfo_header: "yes"
-          discovery: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration # CSS
+          discovery: https://loginproxy.gov.bc.ca/auth/realms/standard/.well-known/openid-configuration # CSS
           groups_claim: client_roles
           header_claims:
             - idir_username
@@ -45,7 +45,7 @@ routes:
             - X-User-Email
           logout_path: /logout
           realm: kong
-          redirect_uri: https://metabase.dev.api.gov.bc.ca/sso # CSS
+          redirect_uri: https://metabase.api.gov.bc.ca/sso # CSS
           redirect_after_logout_uri: /
           response_type: code
           revoke_tokens_on_logout: "yes"

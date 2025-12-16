@@ -7,7 +7,7 @@ metabase:
     host: postgres
     port: 5432
     name: metabase
-    username: postgres
+    username: metabase
 
   resources:
     requests:

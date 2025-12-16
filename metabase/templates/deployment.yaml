@@ -21,6 +21,8 @@ spec:
         - containerPort: 3000
           name: http
         env:
+        - name: MB_SAMPLE_DATA
+          value: "false"
         - name: MB_DB_TYPE
           value: {{ .Values.metabase.database.type }}
         - name: MB_DB_DBNAME
@@ -32,7 +34,7 @@ spec:
         - name: MB_DB_PASS
           valueFrom:
             secretKeyRef:
-              name: postgres-credentials
+              name: metabase-credentials
               key: password
         - name: MB_DB_HOST
           value: {{ .Values.metabase.database.host }}
