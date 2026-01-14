@@ -115,5 +115,15 @@ This removes Superset resources but does not delete the metadata database unless
   [https://superset.apache.org/docs/intro](https://superset.apache.org/docs/intro)
 
 * Helm chart repository:
-  [https://artifacthub.io/packages/helm/superset/superset](https://artifacthub.io/packages/helm/superset/superset)
+  [https://gallery.ecr.aws/bitnami/superset](https://gallery.ecr.aws/bitnami/superset)
 
+
+### Notes
+
+A few other things to note:
+
+- Currently Superset is deployed on `a2edba-dev` which is being used for another application called `Cappy`. This is because Superset requires a large number of resources and we did not have another space to deploy it. This is fine for testing and development but we will need to move it to another namespace for production deployments. Also please be mindful of Cappy when working on `a2edba-dev` and do not modify or remove the resources dedicated to Cappy. All Cappy resources should have annotations or tagged as such.
+
+- Superset uses Bitnami images. This can cause issues, especially with Bitnami Archiving images on dockerhub. Right now I am overwriting those image locations with the AWS bitnami images which is more stable but long term we should self host the images on ghcr or artifactory. Ideally we could get off Bitnami altogether but that seems unlikely with how integrated those images are to the deployment.
+
+- Right now I am using the default route that is provided. This means the application is not behind IDIR. I would highly suggest using the kong gateway provided by the APS team. It is very easy to setup and use.
