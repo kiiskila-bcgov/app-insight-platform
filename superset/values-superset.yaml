@@ -1,0 +1,134 @@
+# --------------------
+# Global / OpenShift
+# --------------------
+global:
+  security:
+    allowInsecureImages: true
+  compatibility:
+    openshift:
+      adaptSecurityContext: auto
+
+fullnameOverride: superset
+
+# --------------------
+# Superset Image (AWS ECR)
+# --------------------
+image:
+  registry: public.ecr.aws
+  repository: bitnami/superset
+  tag: 5.0.0-debian-12-r89
+  pullPolicy: IfNotPresent
+
+# --------------------
+# Authentication / SECRET_KEY
+# --------------------
+auth:
+  username: admin
+  email: admin@example.com
+  password: admin
+  secretKey: "SECRET_KEY"
+
+# --------------------
+# Superset Web
+# --------------------
+web:
+  replicaCount: 1
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+  service:
+    type: ClusterIP
+    ports:
+      http: 8088
+
+# --------------------
+# Superset Worker
+# --------------------
+worker:
+  replicaCount: 1
+
+  extraEnvVars:
+    - name: CELERY_WORKER_CONCURRENCY
+      value: "2"
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+# --------------------
+# Disable optional components
+# --------------------
+beat:
+  enabled: false
+
+websocket:
+  enabled: false
+
+# --------------------
+# PostgreSQL (Bitnami, ECR)
+# --------------------
+postgresql:
+  enabled: true
+
+  image:
+    registry: public.ecr.aws
+    repository: bitnami/postgresql
+    tag: 14.17.0-debian-12-r3
+
+  auth:
+    username: superset
+    password: superset
+    database: superset
+
+  primary:
+    persistence:
+      enabled: true
+      size: 5Gi
+      storageClass: netapp-file-standard
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+# --------------------
+# Redis (Bitnami, ECR)
+# --------------------
+redis:
+  enabled: true
+
+  image:
+    registry: public.ecr.aws
+    repository: bitnami/redis
+    tag: 7.0.10-debian-11-r4
+
+  architecture: standalone
+
+  auth:
+    enabled: true
+    password: ""
+    existingSecret: ""
+
+  master:
+    persistence:
+      enabled: false
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+
+existingConfigmap: ""
+existingSecret: ""
